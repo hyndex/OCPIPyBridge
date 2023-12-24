@@ -1,5 +1,6 @@
-from pydantic import BaseModel, HttpUrl
 from typing import List, Optional, Dict, Union
+from pydantic import BaseModel, HttpUrl, validator
+from datetime import datetime
 
 class Dimension(BaseModel):
     type: str
@@ -202,10 +203,69 @@ class CDR(BaseModel):
     cdrToken: Token
     chargingPeriods: List[ChargingPeriod] = []
 
-class Command(BaseModel):
+
+class CommandBase(BaseModel):
     id: str
+    user_id: Optional[str] = None
+
+class CancelReservationCommand(CommandBase):
+    reservation_id: str
+
+    @validator('reservation_id')
+    def validate_reservation_id(cls, v):
+        if not v:
+            raise ValueError("Reservation ID is required for CANCEL_RESERVATION command")
+        return v
+
+class ReserveNowCommand(CommandBase):
+    evse_id: str
+    reservation_id: str
+    expiry_datetime: datetime
+
+    @validator('evse_id', 'reservation_id')
+    def validate_ids(cls, v):
+        if not v:
+            raise ValueError("EVSE ID and Reservation ID are required for RESERVE_NOW command")
+        return v
+
+class StartSessionCommand(CommandBase):
+    evse_id: str
+
+    @validator('evse_id')
+    def validate_evse_id(cls, v):
+        if not v:
+            raise ValueError("EVSE ID is required for START_SESSION command")
+        return v
+
+class StopSessionCommand(CommandBase):
+    session_id: str
+
+    @validator('session_id')
+    def validate_session_id(cls, v):
+        if not v:
+            raise ValueError("Session ID is required for STOP_SESSION command")
+        return v
+
+class UnlockConnectorCommand(CommandBase):
+    connector_id: str
+
+    @validator('connector_id')
+    def validate_connector_id(cls, v):
+        if not v:
+            raise ValueError("Connector ID is required for UNLOCK_CONNECTOR command")
+        return v
+
+class Command(BaseModel):
     type: str
-    data: dict
+    data: Union[CancelReservationCommand, ReserveNowCommand, StartSessionCommand, StopSessionCommand, UnlockConnectorCommand]
+
+    @validator('type')
+    def validate_command_type(cls, v):
+        valid_types = ['CANCEL_RESERVATION', 'RESERVE_NOW', 'START_SESSION', 'STOP_SESSION', 'UNLOCK_CONNECTOR']
+        if v not in valid_types:
+            raise ValueError(f"Invalid command type. Must be one of: {valid_types}")
+        return v
+
 
 class Transaction(BaseModel):
     id: str
