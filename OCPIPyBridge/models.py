@@ -137,7 +137,7 @@ class Location(BaseModel):
     postalCode: str
     country: str
     coordinates: Coordinates
-    relatedLocations: List[Location] = []
+    relatedLocations: List['Location'] = []
     parkingType: str
     evse: List[Connector] = []
     facilities: List[Facility] = []

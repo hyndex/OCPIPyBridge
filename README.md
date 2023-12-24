@@ -29,7 +29,7 @@ pip install OCPIPyBridge
 Import the required models from `OCPIPyBridge`:
 
 ```python
-from ocpi_py_bridge.models import Location, EVSE, Connector, CDR, Command, Transaction, Feedback, Meter, Reservation, Tariff, User, Credentials
+from OCPIPyBridge.models import Location, EVSE, Connector, CDR, Command, Transaction, Feedback, Meter, Reservation, Tariff, User, Credentials
 ```
 
 ### Model Usage Examples
@@ -39,7 +39,7 @@ Example of how to instantiate and use each model:
 #### Location
 
 ```python
-from ocpi_py_bridge.models import Location
+from OCPIPyBridge.models import Location
 
 location_data = {
     "id": "loc1",
@@ -60,7 +60,7 @@ print(location.json())
 
 ```python
 from flask import Flask, request, jsonify
-from ocpi_py_bridge.models import CDR
+from OCPIPyBridge.models import CDR
 
 app = Flask(__name__)
 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 ```python
 from fastapi import FastAPI, HTTPException
 from pydantic import ValidationError
-from ocpi_py_bridge.models import CDR
+from OCPIPyBridge.models import CDR
 
 app = FastAPI()
 

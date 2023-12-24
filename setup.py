@@ -1,11 +1,17 @@
 from setuptools import setup, find_packages
 
+
+# Read the contents of your README file
+with open('README.md', 'r') as fh:
+    long_description = fh.read()
+
+
 setup(
     name='OCPIPyBridge',
-    version='0.1.0',
+    version='0.1.1',
     packages=find_packages(),
     description='Python library for Open Charge Point Interface (OCPI) protocol',
-    long_description=open('README.md').read(),
+    long_description=long_description,
     long_description_content_type='text/markdown',
     author='Chinmoy Bhuyan',
     author_email='dikibhuyan@gmail.com',
@@ -13,6 +19,7 @@ setup(
     license='MIT',
     install_requires=[
         'pydantic>=1.8.2',
+        'typing-extensions>=3.7.4.3', 
         'httpx>=0.18.2'  # or other dependencies
     ],
     classifiers=[
