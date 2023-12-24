@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='py_ocpi',
+    name='OCPIPyBridge',
     version='0.1.0',
     packages=find_packages(),
     description='Python library for Open Charge Point Interface (OCPI) protocol',
@@ -9,7 +9,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Chinmoy Bhuyan',
     author_email='dikibhuyan@gmail.com',
-    url='https://github.com/hyndex/py_ocpi',
+    url='https://github.com/hyndex/OCPIPyBridge',
     license='MIT',
     install_requires=[
         'pydantic>=1.8.2',
