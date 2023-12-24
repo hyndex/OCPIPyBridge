@@ -98,6 +98,36 @@ async def handle_cdr(cdr_data: CDR):
 
 ```
 
+### Start Transaction Command
+
+The `StartTransaction` command initiates a charging session for an electric vehicle. Below is an example of how to create and use this command:
+
+```python
+from OCPIPyBridge.models import Command, StartSessionCommand
+
+# Example data for starting a session
+start_session_data = {
+    "evse_id": "evse12345",
+    "user_id": "user67890"
+}
+
+# Create a StartSessionCommand instance
+start_session_command = StartSessionCommand(**start_session_data)
+
+# Create the main Command instance with the StartSessionCommand
+command_data = {
+    "id": "cmd123",
+    "type": "START_SESSION",
+    "data": start_session_command
+}
+
+command = Command(**command_data)
+print(command.json())
+```
+
+In this example, `StartSessionCommand` is a submodel of `Command` tailored specifically for the `START_SESSION` command type. It includes necessary fields like `evse_id` and `user_id`. These details are crucial for identifying the EVSE (Electric Vehicle Supply Equipment) and the user initiating the transaction.
+
+
 ## Contributing
 
 To contribute to `OCPIPyBridge`:
