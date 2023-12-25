@@ -147,3 +147,5 @@ To contribute to `OCPIPyBridge`:
 ## License
 
 `OCPIPyBridge` is under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+
+Keywords: #OCPI, EV Charging, Python Library, Electric Vehicle, Charging Network, Interoperability, Smart Charging, Open Standards, EVSE Management, Python Integration, Energy Services, Sustainable Transport, OCPI.
