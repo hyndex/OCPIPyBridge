@@ -1,6 +1,9 @@
-from typing import List, Optional, Dict, Union
+from typing import List, Optional, Dict, Union, Generic, TypeVar
 from pydantic import BaseModel, HttpUrl, validator
 from datetime import datetime
+from pydantic.generics import GenericModel
+
+DataT = TypeVar('DataT')
 
 class Dimension(BaseModel):
     type: str
@@ -238,14 +241,47 @@ class SetChargingProfile(BaseModel):
     chargingProfile: ChargingProfile
     responseUrl: HttpUrl
 
+
 class CommandResult(BaseModel):
     result: str
     message: str
+
+    @validator('result')
+    def validate_result(cls, v):
+        valid_results = [
+            'ACCEPTED',
+            'CANCELED_RESERVATION',
+            'EVSE_OCCUPIED',
+            'EVSE_INOPERATIVE',
+            'FAILED',
+            'NOT_SUPPORTED',
+            'REJECTED',
+            'TIMEOUT',
+            'UNKNOWN_RESERVATION'
+        ]
+        if v not in valid_results:
+            raise ValueError(f"Invalid result: {v}. Must be one of: {valid_results}")
+        return v
+
 
 class CommandResponse(BaseModel):
     result: str
     timeout: int
     message: str
+
+    @validator('result')
+    def validate_result(cls, v):
+        valid_results = ['NOT_SUPPORTED', 'REJECTED', 'ACCEPTED', 'UNKNOWN_SESSION']
+        if v not in valid_results:
+            raise ValueError(f"Invalid result: {v}. Must be one of: {valid_results}")
+        return v
+
+    @validator('timeout')
+    def validate_timeout(cls, v):
+        if v <= 0:
+            raise ValueError("Timeout must be a positive number")
+        return v
+
 
 class DisplayText(BaseModel):
     language: str
@@ -341,3 +377,15 @@ class User(BaseModel):
     name: str
     email: str
     verified: bool
+
+
+
+
+class OCPIResponse(GenericModel, Generic[DataT]):
+    statusCode: int
+    statusMessage: str
+    timestamp: datetime
+    data: Union[DataT, List[DataT]]
+
+    class Config:
+        arbitrary_types_allowed = True
