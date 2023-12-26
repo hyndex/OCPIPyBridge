@@ -12,7 +12,7 @@
 
 ## Features
 
-- Models for key OCPI entities: `Location`, `EVSE`, `Connector`, `CDR`, `Command`, `Transaction`, `Feedback`, `Meter`, `Reservation`, `Tariff`, `User`, and `Credentials`.
+- Models for key OCPI entities: `Location`, `EVSE`, `Connector`, `CDR`, `Command`, `Transaction`, `Feedback`, `Meter`, `Reservation`, `Tariff`, `User`, `Credentials`, `ChargingProfile`, `Token`, and more.
 - Validations align with OCPI standards using Pydantic.
 - Supports diverse OCPI operations and functionalities.
 
@@ -29,14 +29,16 @@ pip install OCPIPyBridge
 Import the required models from `OCPIPyBridge`:
 
 ```python
-from OCPIPyBridge.models import Location, EVSE, Connector, CDR, Command, Transaction, Feedback, Meter, Reservation, Tariff, User, Credentials
+from OCPIPyBridge.models import (
+    Location, EVSE, Connector, CDR, Command, Transaction, Feedback, Meter,
+    Reservation, Tariff, User, Credentials, ChargingProfile, Token, CommandResult,
+    CommandResponse, DisplayText, EnergyContract, LocationReferences, AuthorizationInfo
+)
 ```
 
 ### Model Usage Examples
 
-Example of how to instantiate and use each model:
-
-#### Location
+#### Location Example
 
 ```python
 from OCPIPyBridge.models import Location
@@ -50,6 +52,33 @@ location_data = {
 
 location = Location(**location_data)
 print(location.json())
+```
+
+#### EVSE Example
+
+```python
+from OCPIPyBridge.models import EVSE
+
+evse_data = {
+    "uid": "evse12345",
+    # ... other EVSE details ...
+}
+
+evse = EVSE(**evse_data)
+print(evse.json())
+```
+
+#### Charging Profile Example
+
+```python
+from OCPIPyBridge.models import ChargingProfile
+
+profile_data = {
+    # ... charging profile details ...
+}
+
+charging_profile = ChargingProfile(**profile_data)
+print(charging_profile.json())
 ```
 
 ... (Similar examples for other models)
@@ -66,13 +95,10 @@ app = Flask(__name__)
 
 @app.route('/api/cdr', methods=['POST'])
 def handle_cdr():
-    try:
-        cdr_data = request.json
-        cdr = CDR(**cdr_data)
-        # Process and save CDR data
-        return jsonify({"message": "CDR data processed successfully."}), 200
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+    cdr_data = request.json
+    cdr = CDR(**cdr_data)
+    # Process and save CDR data
+    return jsonify({"message": "CDR data processed successfully."}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -89,44 +115,11 @@ app = FastAPI()
 
 @app.post('/api/cdr')
 async def handle_cdr(cdr_data: CDR):
-    try:
-        cdr_data.validate()
-        # Process and save CDR data
-        return {"message": "CDR data processed successfully."}
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    cdr_data.validate()
+    # Process and save CDR data
+    return {"message": "CDR data processed successfully."}
 
 ```
-
-### Start Transaction Command
-
-The `StartTransaction` command initiates a charging session for an electric vehicle. Below is an example of how to create and use this command:
-
-```python
-from OCPIPyBridge.models import Command, StartSessionCommand
-
-# Example data for starting a session
-start_session_data = {
-    "evse_id": "evse12345",
-    "user_id": "user67890"
-}
-
-# Create a StartSessionCommand instance
-start_session_command = StartSessionCommand(**start_session_data)
-
-# Create the main Command instance with the StartSessionCommand
-command_data = {
-    "id": "cmd123",
-    "type": "START_SESSION",
-    "data": start_session_command
-}
-
-command = Command(**command_data)
-print(command.json())
-```
-
-In this example, `StartSessionCommand` is a submodel of `Command` tailored specifically for the `START_SESSION` command type. It includes necessary fields like `evse_id` and `user_id`. These details are crucial for identifying the EVSE (Electric Vehicle Supply Equipment) and the user initiating the transaction.
-
 
 ## Contributing
 
