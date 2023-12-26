@@ -204,6 +204,69 @@ class CDR(BaseModel):
     chargingPeriods: List[ChargingPeriod] = []
 
 
+
+class ChargingProfilePeriod(BaseModel):
+    startPeriod: int
+    limit: float
+
+class ChargingProfile(BaseModel):
+    startDateTime: Optional[datetime]
+    duration: Optional[int]
+    chargingRateUnit: str
+    minChargingRate: Optional[float]
+    chargingProfilePeriod: List[ChargingProfilePeriod]
+
+class ActiveChargingProfile(BaseModel):
+    startDateTime: datetime
+    chargingProfile: ChargingProfile
+
+class ChargingProfileResponse(BaseModel):
+    result: str
+    timeout: int
+
+class ActiveChargingProfileResult(BaseModel):
+    result: str
+    profile: Optional[ActiveChargingProfile]
+
+class ChargingProfileResult(BaseModel):
+    result: str
+
+class ClearProfileResult(BaseModel):
+    result: str
+
+class SetChargingProfile(BaseModel):
+    chargingProfile: ChargingProfile
+    responseUrl: HttpUrl
+
+class CommandResult(BaseModel):
+    result: str
+    message: str
+
+class CommandResponse(BaseModel):
+    result: str
+    timeout: int
+    message: str
+
+class DisplayText(BaseModel):
+    language: str
+    text: str
+
+class EnergyContract(BaseModel):
+    supplierName: str
+    contractId: Optional[str]
+
+class LocationReferences(BaseModel):
+    locationId: str
+    evseUids: Optional[List[str]]
+
+class AuthorizationInfo(BaseModel):
+    allowed: str
+    token: Token
+    location: Optional[LocationReferences]
+    authorizationReference: Optional[str]
+    info: Optional[DisplayText]
+
+
 class CommandBase(BaseModel):
     id: str
     user_id: Optional[str] = None
